@@ -159,24 +159,24 @@
 
 		register_post_type('itineraries', array(
 			'labels' => array(
-				'name' 								=> _x('Roteiros', 'itineraries'),
-				'singular_name' 			=> _x('Roteiros', 'itineraries')
+				'name' 					=> _x('Roteiros', 'itineraries'),
+				'singular_name' 		=> _x('Roteiros', 'itineraries')
 			),
-			'hierarchical' 					=> true,
-			'supports' 							=> array('title'),
-			'public' 								=> true,
-			'show_ui' 							=> true,
-			'show_in_menu' 					=> true,
+			'hierarchical' 				=> true,
+			'supports' 					=> array('title'),
+			'public' 					=> true,
+			'show_ui' 					=> true,
+			'show_in_menu' 				=> true,
 			'show_in_nav_menus' 		=> true,
 			'publicly_queryable' 		=> true,
-			'exclude_from_search' 	=> false,
-			'has_archive' 					=> true,
-			'query_var' 						=> true,
-			'can_export' 						=> true,
-			'rewrite' 							=> true,
+			'exclude_from_search' 		=> false,
+			'has_archive' 				=> true,
+			'query_var' 				=> true,
+			'can_export' 				=> true,
+			'rewrite' 					=> true,
 			'capability_type' 			=> 'post',
-			'menu_position' 				=> 6,
-			'menu_icon' 						=> 'dashicons-airplane',
+			'menu_position' 			=> 6,
+			'menu_icon' 				=> 'dashicons-airplane',
 			'show_in_rest'       		=> true,
 			'rest_base'          		=> 'itineraries',
 			'rest_controller_class' => 'WP_REST_Posts_Controller'
@@ -184,24 +184,24 @@
 
 		register_post_type('newsletter', array(
 			'labels' => array(
-				'name' 								=> _x('Newsletter', 'newsletter'),
-				'singular_name' 			=> _x('Newsletter', 'newsletter')
+				'name' 					=> _x('Newsletter', 'newsletter'),
+				'singular_name' 		=> _x('Newsletter', 'newsletter')
 			),
-			'hierarchical' 					=> true,
-			'supports' 							=> array('title'),
-			'public' 								=> true,
-			'show_ui' 							=> true,
-			'show_in_menu' 					=> true,
+			'hierarchical' 				=> true,
+			'supports' 					=> array('title'),
+			'public' 					=> true,
+			'show_ui' 					=> true,
+			'show_in_menu' 				=> true,
 			'show_in_nav_menus' 		=> true,
 			'publicly_queryable' 		=> true,
-			'exclude_from_search' 	=> false,
-			'has_archive' 					=> true,
-			'query_var' 						=> true,
-			'can_export' 						=> true,
-			'rewrite' 							=> true,
+			'exclude_from_search' 		=> false,
+			'has_archive' 				=> true,
+			'query_var' 				=> true,
+			'can_export' 				=> true,
+			'rewrite' 					=> true,
 			'capability_type' 			=> 'post',
-			'menu_position' 				=> 6,
-			'menu_icon' 						=> 'dashicons-email',
+			'menu_position' 			=> 6,
+			'menu_icon' 				=> 'dashicons-email',
 			'show_in_rest'       		=> false
 		));
 
@@ -287,7 +287,7 @@
 			'meta_query'	=> array(
 				'relation'		=> 'AND',
 				array(
-					'key'	 			=> 'boarding_place',
+					'key'	 	=> 'boarding_place',
 					'value'	  	=> $params['boarding_place'],
 					'compare' 	=> 'LIKE',
 				),
@@ -309,17 +309,19 @@
 					'rendered' => $post->post_title
 				),
 				'acf' 	=> array(
-					'pre-salve' 			=> get_field('pre-salve', $post->ID),
-					'image' 					=> get_field('image', $post->ID),
-					'included_resume' => get_field('included_resume', $post->ID),
-					'old_price' 			=> get_field('old_price', $post->ID),
-					'price' 					=> get_field('price', $post->ID),
+					'banner' 			=> get_field('banner', $post->ID),
+					'list_image' 		=> get_field('list_image', $post->ID),
+					'sale_type' 		=> get_field('sale_type', $post->ID),
+					'image' 			=> get_field('image', $post->ID),
+					'included_resume' 	=> get_field('included_resume', $post->ID),
+					'old_price' 		=> get_field('old_price', $post->ID),
+					'price' 			=> get_field('price', $post->ID),
 					'installment' 		=> get_field('installment', $post->ID),
-					'period' 					=> get_field('period', $post->ID),
-					'output' 					=> get_field('output', $post->ID),
-					'arrival' 				=> get_field('arrival', $post->ID),
+					'period' 			=> get_field('period', $post->ID),
+					'output' 			=> get_field('output', $post->ID),
+					'arrival' 			=> get_field('arrival', $post->ID),
 					'boarding_place' 	=> get_field('boarding_place', $post->ID),
-					'included' 				=> get_field('included', $post->ID)
+					'included' 			=> get_field('included', $post->ID)
 				)
 			);
 
