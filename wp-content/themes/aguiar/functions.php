@@ -213,7 +213,7 @@
 
 		add_image_size('testimonials-person', 123, 123, array('center', 'center'));
 
-		add_image_size('itineraries-list', 313, 150, array('top', 'top'));
+		add_image_size('itineraries-list', 390, 390, array('top', 'top'));
 
 		add_image_size('itinerarie', 800, 800, array('center', 'center'));
 
