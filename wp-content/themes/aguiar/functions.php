@@ -332,6 +332,60 @@
 
 	}
 
+	function wp_cities_and_months() {
+
+		$posts = get_posts(array(
+			'numberposts'	=> -1,
+			'post_type'		=> 'itineraries'
+		));
+
+		$months = [];
+
+		$cities = [];
+
+		$ptBrMonths = array('', 'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro');
+
+		$ptBrMonthsAbv = array('', 'Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez');
+
+		foreach($posts as $post):
+
+			$date = explode('-', get_field('output', $post->ID));
+
+			if(!array_key_exists($date[1], $months)) {
+
+				$months[$date[1]] = [
+					'month' 		=> $ptBrMonths[$date[1]*1],
+					'abbreviation'	=> strtolower($ptBrMonthsAbv[$date[1]*1])
+				];
+
+			}
+
+			foreach(get_field('boarding_place', $post->ID) as $city):
+
+				if(!array_key_exists($city['value'], $cities)) {
+
+					$cities[$city['value']] = [
+						'name' => $city['label'],
+						'slug' => $city['value']
+					];
+
+				}
+
+			endforeach;
+
+		endforeach;
+
+		asort($cities);
+
+		ksort($months);
+
+		return [
+			'months' => $months,
+			'cities' => $cities
+		];
+
+	}
+
 	add_action('rest_api_init', function(){
 
 		register_rest_route('aguiar', '/registerNewsletter', array(
@@ -342,6 +396,11 @@
 		register_rest_route('aguiar', '/itineraries/(?P<per_page>[0-9_-]+)/(?P<boarding_place>[a-zA-Z0-9_-]+)/(?P<period>[a-zA-Z0-9_-]+)', array(
 			'methods' 	=> 'GET',
 			'callback' 	=> 'wp_filter_itineraries',
+		));
+
+		register_rest_route('aguiar', '/city-month', array(
+			'methods' 	=> 'GET',
+			'callback' 	=> 'wp_cities_and_months',
 		));
 
 

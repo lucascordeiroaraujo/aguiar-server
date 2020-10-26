@@ -29,7 +29,7 @@ define( 'DB_USER', 'aguiarwp' );
 define( 'DB_PASSWORD', '150875pe' );
 
 /** Nome do host do MySQL */
-define( 'DB_HOST', 'mysql669.umbler.com' );
+define( 'DB_HOST', 'mysql669.umbler.com:41890' );
 
 /** Charset do banco de dados a ser usado na criação das tabelas. */
 define( 'DB_CHARSET', 'utf8mb4' );
