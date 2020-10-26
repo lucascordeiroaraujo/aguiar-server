@@ -98,7 +98,7 @@
 
 		remove_menu_page('options-general.php');
 
-		// remove_menu_page('tools.php');
+		remove_menu_page('tools.php');
 
 		remove_menu_page('edit.php');
 
