@@ -44,7 +44,8 @@
 				tr.user-rich-editing-wrap, tr.user-syntax-highlighting-wrap, tr.user-admin-color-wrap, tr.user-comment-shortcuts-wrap, 
 				tr.show-admin-bar.user-admin-bar-front-wrap, tr.user-description-wrap, tr.user-profile-picture, tr.user-display-name-wrap, 
 				tr.user-nickname-wrap, #toplevel_page_wp-graphiql-wp-graphiql, #wp-admin-bar-view, #message p a, #edit-slug-box, a.acf-hndle-cog,
-				span.view, #bulk-action-selector-bottom, #doaction2, #collapse-menu, #menu-posts-contact, .empty-container, .acf-to-rest-api-donation-notice {
+				span.view, #bulk-action-selector-bottom, #doaction2, #collapse-menu, #menu-posts-contact, .empty-container, .acf-to-rest-api-donation-notice, 
+				#dashboard_site_health {
 					display: none !important;
 				}
 				#pageparentdiv select{
