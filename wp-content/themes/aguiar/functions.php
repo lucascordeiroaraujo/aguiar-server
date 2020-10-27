@@ -345,8 +345,6 @@
 
 		$ptBrMonths = array('', 'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro');
 
-		$ptBrMonthsAbv = array('', 'Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez');
-
 		foreach($posts as $post):
 
 			$date = explode('-', get_field('output', $post->ID));
@@ -355,7 +353,8 @@
 
 				$months[$date[1]] = [
 					'month' 		=> $ptBrMonths[$date[1]*1],
-					'abbreviation'	=> strtolower($ptBrMonthsAbv[$date[1]*1])
+					'abbreviation'	=> substr($ptBrMonths[$date[1]*1], 0, 3),
+					'slug' 			=> strtolower(str_replace('ç', '', $ptBrMonths[$date[1]*1]))
 				];
 
 			}
