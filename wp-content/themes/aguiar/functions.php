@@ -322,7 +322,11 @@
 					'output' 			=> get_field('output', $post->ID),
 					'arrival' 			=> get_field('arrival', $post->ID),
 					'boarding_place' 	=> get_field('boarding_place', $post->ID),
-					'included' 			=> get_field('included', $post->ID)
+					'included' 			=> get_field('included', $post->ID),
+					'seo_image' 		=> get_field('seo_image', $post->ID),
+					'seo_title' 		=> get_field('seo_title', $post->ID),
+					'seo_description' 	=> get_field('seo_description', $post->ID),
+					'pictures' 			=> get_field('pictures', $post->ID),
 				)
 			);
 
