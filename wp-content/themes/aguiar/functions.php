@@ -160,24 +160,24 @@
 
 		register_post_type('itineraries', array(
 			'labels' => array(
-				'name' 					=> _x('Roteiros', 'itineraries'),
+				'name' 							=> _x('Roteiros', 'itineraries'),
 				'singular_name' 		=> _x('Roteiros', 'itineraries')
 			),
-			'hierarchical' 				=> true,
-			'supports' 					=> array('title'),
-			'public' 					=> true,
-			'show_ui' 					=> true,
-			'show_in_menu' 				=> true,
+			'hierarchical' 					=> true,
+			'supports' 							=> array('title'),
+			'public' 								=> true,
+			'show_ui' 							=> true,
+			'show_in_menu' 					=> true,
 			'show_in_nav_menus' 		=> true,
 			'publicly_queryable' 		=> true,
-			'exclude_from_search' 		=> false,
-			'has_archive' 				=> true,
-			'query_var' 				=> true,
-			'can_export' 				=> true,
-			'rewrite' 					=> true,
+			'exclude_from_search' 	=> false,
+			'has_archive' 					=> true,
+			'query_var' 						=> true,
+			'can_export' 						=> true,
+			'rewrite' 							=> true,
 			'capability_type' 			=> 'post',
-			'menu_position' 			=> 6,
-			'menu_icon' 				=> 'dashicons-airplane',
+			'menu_position' 				=> 6,
+			'menu_icon' 						=> 'dashicons-airplane',
 			'show_in_rest'       		=> true,
 			'rest_base'          		=> 'itineraries',
 			'rest_controller_class' => 'WP_REST_Posts_Controller'
@@ -185,25 +185,25 @@
 
 		register_post_type('newsletter', array(
 			'labels' => array(
-				'name' 					=> _x('Newsletter', 'newsletter'),
+				'name' 							=> _x('Newsletter', 'newsletter'),
 				'singular_name' 		=> _x('Newsletter', 'newsletter')
 			),
 			'hierarchical' 				=> true,
-			'supports' 					=> array('title'),
-			'public' 					=> true,
-			'show_ui' 					=> true,
+			'supports' 						=> array('title'),
+			'public' 							=> true,
+			'show_ui' 						=> true,
 			'show_in_menu' 				=> true,
-			'show_in_nav_menus' 		=> true,
-			'publicly_queryable' 		=> true,
-			'exclude_from_search' 		=> false,
+			'show_in_nav_menus' 	=> true,
+			'publicly_queryable' 	=> true,
+			'exclude_from_search' => false,
 			'has_archive' 				=> true,
-			'query_var' 				=> true,
-			'can_export' 				=> true,
-			'rewrite' 					=> true,
-			'capability_type' 			=> 'post',
+			'query_var' 					=> true,
+			'can_export' 					=> true,
+			'rewrite' 						=> true,
+			'capability_type' 		=> 'post',
 			'menu_position' 			=> 6,
-			'menu_icon' 				=> 'dashicons-email',
-			'show_in_rest'       		=> false
+			'menu_icon' 					=> 'dashicons-email',
+			'show_in_rest'       	=> false
 		));
 
 	}add_action('init', 'register_cpts');
@@ -278,57 +278,105 @@
 		return rest_ensure_response($response);
 	}
 
+	function searchForId($search_value, $array, $id_path) { 
+
+		foreach ($array as $key1 => $val1) { 
+
+			$temp_path = $id_path; 
+
+			array_push($temp_path, $key1); 
+
+			if(is_array($val1) and count($val1)) { 
+
+				foreach ($val1 as $key2 => $val2) { 
+
+					if($val2 == $search_value) { 
+
+						array_push($temp_path, $key2); 
+
+						return join(" --> ", $temp_path); 
+
+					} 
+
+				} 
+
+			}elseif($val1 == $search_value) {
+
+				return join(" --> ", $temp_path); 
+
+			} 
+
+		} 
+
+		return null; 
+
+	}
+
 	function wp_filter_itineraries($request) {
 
 		$params = $request->get_params();
 
+		$months = array(
+			'janeiro' 	=> '01', 
+			'fevereiro' => '02', 
+			'marco' 		=> '03', 
+			'abril' 		=> '04', 
+			'maio' 			=> '05', 
+			'junho' 		=> '06', 
+			'julho' 		=> '07', 
+			'agosto' 		=> '08', 
+			'setembro' 	=> '09', 
+			'outubro' 	=> '10', 
+			'novembro' 	=> '11', 
+			'dezembro' 	=> '12'
+		);
+
 		$posts = get_posts(array(
-			'numberposts'	=> $params['per_page'],
-			'post_type'		=> 'itineraries',
-			'meta_query'	=> array(
-				'relation'		=> 'AND',
-				array(
-					'key'	 	=> 'boarding_place',
-					'value'	  	=> $params['boarding_place'],
-					'compare' 	=> 'LIKE',
-				),
-				array(
-					'key'	  		=> 'period',
-					'value'	  	=> $params['period'],
-					'compare' 	=> 'LIKE',
-				),
-			)
+			'numberposts'	=> -1,
+			'post_type'		=> 'itineraries'
 		));
 
 		$itinerariesList = array();
+		
+		$count = 0;
 
 		foreach($posts as $post):
 
-			$itinerariesList[] = array(
-				'slug' 	=> $post->post_name,
-				'title' => array(
-					'rendered' => $post->post_title
-				),
-				'acf' 	=> array(
-					'banner' 			=> get_field('banner', $post->ID),
-					'list_image' 		=> get_field('list_image', $post->ID),
-					'sale_type' 		=> get_field('sale_type', $post->ID),
-					'image' 			=> get_field('image', $post->ID),
-					'included_resume' 	=> get_field('included_resume', $post->ID),
-					'old_price' 		=> get_field('old_price', $post->ID),
-					'price' 			=> get_field('price', $post->ID),
-					'installment' 		=> get_field('installment', $post->ID),
-					'period' 			=> get_field('period', $post->ID),
-					'output' 			=> get_field('output', $post->ID),
-					'arrival' 			=> get_field('arrival', $post->ID),
-					'boarding_place' 	=> get_field('boarding_place', $post->ID),
-					'included' 			=> get_field('included', $post->ID),
-					'seo_image' 		=> get_field('seo_image', $post->ID),
-					'seo_title' 		=> get_field('seo_title', $post->ID),
-					'seo_description' 	=> get_field('seo_description', $post->ID),
-					'pictures' 			=> get_field('pictures', $post->ID),
-				)
-			);
+			$output = explode('-', get_field('output', $post->ID));
+
+			$key = searchForId($params['boarding_place'], get_field('boarding_place', $post->ID), array('value'));
+
+			if($key && $output[1] === $months[$params['period']] && $count < intval($params['per_page'], 10)):
+
+				$count++;
+
+				$itinerariesList[] = array(
+					'slug' 	=> $post->post_name,
+					'title' => array(
+						'rendered' => $post->post_title
+					),
+					'acf' 	=> array(
+						'banner' 					=> get_field('banner', $post->ID),
+						'list_image' 			=> get_field('list_image', $post->ID),
+						'sale_type' 			=> get_field('sale_type', $post->ID),
+						'image' 					=> get_field('image', $post->ID),
+						'included_resume' => get_field('included_resume', $post->ID),
+						'old_price' 			=> get_field('old_price', $post->ID),
+						'price' 					=> get_field('price', $post->ID),
+						'installment' 		=> get_field('installment', $post->ID),
+						'period' 					=> get_field('period', $post->ID),
+						'output' 					=> get_field('output', $post->ID),
+						'arrival' 				=> get_field('arrival', $post->ID),
+						'boarding_place' 	=> get_field('boarding_place', $post->ID),
+						'included' 				=> get_field('included', $post->ID),
+						'seo_image' 			=> get_field('seo_image', $post->ID),
+						'seo_title' 			=> get_field('seo_title', $post->ID),
+						'seo_description' => get_field('seo_description', $post->ID),
+						'pictures' 				=> get_field('pictures', $post->ID),
+					)
+				);
+
+			endif;
 
 		endforeach;
 
@@ -356,9 +404,9 @@
 			if(!array_key_exists($date[1], $months)) {
 
 				$months[$date[1]] = [
-					'month' 		=> $ptBrMonths[$date[1]*1],
+					'month' 				=> $ptBrMonths[$date[1]*1],
 					'abbreviation'	=> substr($ptBrMonths[$date[1]*1], 0, 3),
-					'slug' 			=> strtolower(str_replace('ç', '', $ptBrMonths[$date[1]*1]))
+					'slug' 					=> strtolower(str_replace('ç', '', $ptBrMonths[$date[1]*1]))
 				];
 
 			}
