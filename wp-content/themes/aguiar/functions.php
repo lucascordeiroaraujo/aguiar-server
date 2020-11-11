@@ -208,6 +208,29 @@
 
 	}add_action('init', 'register_cpts');
 
+	function tr_create_my_taxonomy(){
+
+		register_taxonomy(
+			'itineraries-category',
+			'itineraries',
+			array(
+				'hierarchical'      	=> true,
+				'public' 							=> true,
+				'show_ui'           	=> true,
+				'show_admin_column' 	=> true,
+				'query_var'         	=> true,
+				'label' 							=> __('Locais de Embarque'),
+				'rewrite' => array(
+					'slug' => 'itineraries-category'
+				),
+				'show_in_rest'       		=> true,
+				'rest_base'          		=> 'itineraries-category',
+				'rest_controller_class' => 'WP_REST_Terms_Controller'
+			)
+		);
+
+	}add_action('init', 'tr_create_my_taxonomy');
+
 	if(function_exists('add_image_size')):
 
 		add_image_size('testimonials', 730, 730, array('center', 'center'));
@@ -278,40 +301,6 @@
 		return rest_ensure_response($response);
 	}
 
-	function searchForId($search_value, $array, $id_path) { 
-
-		foreach ($array as $key1 => $val1) { 
-
-			$temp_path = $id_path; 
-
-			array_push($temp_path, $key1); 
-
-			if(is_array($val1) and count($val1)) { 
-
-				foreach ($val1 as $key2 => $val2) { 
-
-					if($val2 == $search_value) { 
-
-						array_push($temp_path, $key2); 
-
-						return join(" --> ", $temp_path); 
-
-					} 
-
-				} 
-
-			}elseif($val1 == $search_value) {
-
-				return join(" --> ", $temp_path); 
-
-			} 
-
-		} 
-
-		return null; 
-
-	}
-
 	function wp_filter_itineraries($request) {
 
 		$params = $request->get_params();
@@ -333,7 +322,14 @@
 
 		$posts = get_posts(array(
 			'numberposts'	=> -1,
-			'post_type'		=> 'itineraries'
+			'post_type'		=> 'itineraries',
+			'tax_query' => array(
+				array(
+					'taxonomy' 	=> 'itineraries-category',
+					'field' 	=> 'slug',
+					'terms' 	=> $params['boarding_place']
+				)
+			)
 		));
 
 		$itinerariesList = array();
@@ -344,9 +340,7 @@
 
 			$output = explode('-', get_field('output', $post->ID));
 
-			$key = searchForId($params['boarding_place'], get_field('boarding_place', $post->ID), array('value'));
-
-			if($key && $output[1] === $months[$params['period']] && $count < intval($params['per_page'], 10)):
+			if($output[1] === $months[$params['period']] && $count < intval($params['per_page'], 10)):
 
 				$count++;
 
@@ -356,23 +350,12 @@
 						'rendered' => $post->post_title
 					),
 					'acf' 	=> array(
-						'banner' 					=> get_field('banner', $post->ID),
-						'list_image' 			=> get_field('list_image', $post->ID),
-						'sale_type' 			=> get_field('sale_type', $post->ID),
-						'image' 					=> get_field('image', $post->ID),
-						'included_resume' => get_field('included_resume', $post->ID),
-						'old_price' 			=> get_field('old_price', $post->ID),
-						'price' 					=> get_field('price', $post->ID),
+						'list_image' 		=> get_field('list_image', $post->ID),
+						'included_resume' 	=> get_field('included_resume', $post->ID),
+						'price' 			=> get_field('price', $post->ID),
 						'installment' 		=> get_field('installment', $post->ID),
-						'period' 					=> get_field('period', $post->ID),
-						'output' 					=> get_field('output', $post->ID),
-						'arrival' 				=> get_field('arrival', $post->ID),
-						'boarding_place' 	=> get_field('boarding_place', $post->ID),
-						'included' 				=> get_field('included', $post->ID),
-						'seo_image' 			=> get_field('seo_image', $post->ID),
-						'seo_title' 			=> get_field('seo_title', $post->ID),
-						'seo_description' => get_field('seo_description', $post->ID),
-						'pictures' 				=> get_field('pictures', $post->ID),
+						'output' 			=> get_field('output', $post->ID),
+						'arrival' 			=> get_field('arrival', $post->ID)
 					)
 				);
 
@@ -397,6 +380,11 @@
 
 		$ptBrMonths = array('', 'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro');
 
+		$taxonomies = get_terms(array(
+			'taxonomy' 		=> 'itineraries-category',
+			'hide_empty' 	=> true
+		));
+
 		foreach($posts as $post):
 
 			$date = explode('-', get_field('output', $post->ID));
@@ -406,18 +394,18 @@
 				$months[$date[1]] = [
 					'month' 				=> $ptBrMonths[$date[1]*1],
 					'abbreviation'	=> substr($ptBrMonths[$date[1]*1], 0, 3),
-					'slug' 					=> strtolower(str_replace('ç', '', $ptBrMonths[$date[1]*1]))
+					'slug' 					=> strtolower(str_replace('ç', 'c', $ptBrMonths[$date[1]*1]))
 				];
 
 			}
 
-			foreach(get_field('boarding_place', $post->ID) as $city):
+			foreach($taxonomies as $city):
 
-				if(!array_key_exists($city['value'], $cities)) {
+				if(!array_key_exists($city->name, $cities)) {
 
-					$cities[$city['value']] = [
-						'name' => $city['label'],
-						'slug' => $city['value']
+					$cities[$city->name] = [
+						'name' => $city->name,
+						'slug' => $city->slug
 					];
 
 				}
