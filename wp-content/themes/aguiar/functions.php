@@ -160,49 +160,49 @@
 
 		register_post_type('itineraries', array(
 			'labels' => array(
-				'name' 							=> _x('Roteiros', 'itineraries'),
-				'singular_name' 		=> _x('Roteiros', 'itineraries')
+				'name' 				=> _x('Roteiros', 'itineraries'),
+				'singular_name' 	=> _x('Roteiros', 'itineraries')
 			),
-			'hierarchical' 					=> true,
-			'supports' 							=> array('title'),
-			'public' 								=> true,
-			'show_ui' 							=> true,
-			'show_in_menu' 					=> true,
-			'show_in_nav_menus' 		=> true,
-			'publicly_queryable' 		=> true,
+			'hierarchical' 			=> true,
+			'supports' 				=> array('title'),
+			'public' 				=> true,
+			'show_ui' 				=> true,
+			'show_in_menu' 			=> true,
+			'show_in_nav_menus' 	=> true,
+			'publicly_queryable' 	=> true,
 			'exclude_from_search' 	=> false,
-			'has_archive' 					=> true,
-			'query_var' 						=> true,
-			'can_export' 						=> true,
-			'rewrite' 							=> true,
-			'capability_type' 			=> 'post',
-			'menu_position' 				=> 6,
-			'menu_icon' 						=> 'dashicons-airplane',
-			'show_in_rest'       		=> true,
-			'rest_base'          		=> 'itineraries',
+			'has_archive' 			=> true,
+			'query_var' 			=> true,
+			'can_export' 			=> true,
+			'rewrite' 				=> true,
+			'capability_type' 		=> 'post',
+			'menu_position' 		=> 6,
+			'menu_icon' 			=> 'dashicons-airplane',
+			'show_in_rest'       	=> true,
+			'rest_base'          	=> 'itineraries',
 			'rest_controller_class' => 'WP_REST_Posts_Controller'
 		));
 
 		register_post_type('newsletter', array(
 			'labels' => array(
-				'name' 							=> _x('Newsletter', 'newsletter'),
-				'singular_name' 		=> _x('Newsletter', 'newsletter')
+				'name' 				=> _x('Newsletter', 'newsletter'),
+				'singular_name' 	=> _x('Newsletter', 'newsletter')
 			),
-			'hierarchical' 				=> true,
-			'supports' 						=> array('title'),
-			'public' 							=> true,
-			'show_ui' 						=> true,
-			'show_in_menu' 				=> true,
+			'hierarchical' 			=> true,
+			'supports' 				=> array('title'),
+			'public' 				=> true,
+			'show_ui' 				=> true,
+			'show_in_menu' 			=> true,
 			'show_in_nav_menus' 	=> true,
 			'publicly_queryable' 	=> true,
-			'exclude_from_search' => false,
-			'has_archive' 				=> true,
-			'query_var' 					=> true,
-			'can_export' 					=> true,
-			'rewrite' 						=> true,
+			'exclude_from_search' 	=> false,
+			'has_archive' 			=> true,
+			'query_var' 			=> true,
+			'can_export' 			=> true,
+			'rewrite' 				=> true,
 			'capability_type' 		=> 'post',
-			'menu_position' 			=> 6,
-			'menu_icon' 					=> 'dashicons-email',
+			'menu_position' 		=> 6,
+			'menu_icon' 			=> 'dashicons-email',
 			'show_in_rest'       	=> false
 		));
 
@@ -215,16 +215,16 @@
 			'itineraries',
 			array(
 				'hierarchical'      	=> true,
-				'public' 							=> true,
+				'public' 				=> true,
 				'show_ui'           	=> true,
 				'show_admin_column' 	=> true,
 				'query_var'         	=> true,
-				'label' 							=> __('Locais de Embarque'),
+				'label' 				=> __('Locais de Embarque'),
 				'rewrite' => array(
 					'slug' => 'itineraries-category'
 				),
-				'show_in_rest'       		=> true,
-				'rest_base'          		=> 'itineraries-category',
+				'show_in_rest'       	=> true,
+				'rest_base'          	=> 'itineraries-category',
 				'rest_controller_class' => 'WP_REST_Terms_Controller'
 			)
 		);
@@ -254,7 +254,7 @@
 			'post_type'		=> 'newsletter',
 			'meta_key'		=> 'email',
 			'meta_value'	=> $params['body'][0],
-			'post_status' => 'any'
+			'post_status' 	=> 'any'
 		));
 
 		if(!$hasEmail) {
@@ -308,12 +308,12 @@
 		$months = array(
 			'janeiro' 	=> '01', 
 			'fevereiro' => '02', 
-			'marco' 		=> '03', 
-			'abril' 		=> '04', 
-			'maio' 			=> '05', 
-			'junho' 		=> '06', 
-			'julho' 		=> '07', 
-			'agosto' 		=> '08', 
+			'marco' 	=> '03', 
+			'abril' 	=> '04', 
+			'maio' 		=> '05', 
+			'junho' 	=> '06', 
+			'julho' 	=> '07', 
+			'agosto' 	=> '08', 
 			'setembro' 	=> '09', 
 			'outubro' 	=> '10', 
 			'novembro' 	=> '11', 
@@ -390,9 +390,9 @@
 			if(!array_key_exists($date[1], $months)) {
 
 				$months[$date[1]] = [
-					'month' 				=> $ptBrMonths[$date[1]*1],
+					'month' 		=> $ptBrMonths[$date[1]*1],
 					'abbreviation'	=> substr($ptBrMonths[$date[1]*1], 0, 3),
-					'slug' 					=> strtolower(str_replace('ç', 'c', $ptBrMonths[$date[1]*1]))
+					'slug' 			=> strtolower(str_replace('ç', 'c', $ptBrMonths[$date[1]*1]))
 				];
 
 			}
@@ -423,6 +423,59 @@
 
 	}
 
+	function wp_get_roadmap($request) {
+		$params = $request->get_params();
+
+		$post = array_shift(get_posts(array(
+			'post_type'	=> 'itineraries',
+			'name' 		=> $params['post_slug']
+		)));
+
+		$itinerary = array();
+
+		if($post):
+			$categories = wp_get_post_terms($post->ID, 'itineraries-category');
+
+			$boardingPlace = array();
+
+			if($categories):
+				foreach($categories as $cat):
+					$boardingPlace[] = array(
+						'value' => $cat->slug,
+						'label' => $cat->name
+					);
+				endforeach;
+			endif;
+
+			$itinerary[] = array(
+				'slug' => $post->post_name,
+				'title' => array(
+					'rendered' => $post->post_title
+				),
+				'acf' => array(
+					'banner' 			=> get_field('banner', $post->ID),
+					'list_image' 		=> get_field('list_image', $post->ID),
+					'image' 			=> get_field('image', $post->ID),
+					'sale_type' 		=> get_field('sale_type', $post->ID),
+					'included_resume' 	=> get_field('included_resume', $post->ID),
+					'old_price' 		=> get_field('old_price', $post->ID),
+					'price' 			=> get_field('price', $post->ID),
+					'installment' 		=> get_field('installment', $post->ID),
+					'output' 			=> get_field('output', $post->ID),
+					'arrival' 			=> get_field('arrival', $post->ID),
+					'boarding_place' 	=> $boardingPlace,
+					'included' 			=> get_field('included', $post->ID),
+					'pictures' 			=> get_field('pictures', $post->ID),
+					'seo_title' 		=> get_field('seo_title', $post->ID),
+					'seo_description' 	=> get_field('seo_description', $post->ID),
+					'seo_image' 		=> get_field('seo_image', $post->ID),
+				)
+			);
+		endif;
+
+		return $itinerary;
+	}
+
 	add_action('rest_api_init', function(){
 
 		register_rest_route('aguiar', '/registerNewsletter', array(
@@ -440,6 +493,10 @@
 			'callback' 	=> 'wp_cities_and_months',
 		));
 
+		register_rest_route('aguiar', '/itinerary/(?P<post_slug>[a-zA-Z0-9_-]+)', array(
+			'methods' 	=> 'GET',
+			'callback' 	=> 'wp_get_roadmap',
+		));
 
 	});
 
